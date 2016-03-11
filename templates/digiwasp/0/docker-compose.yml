@@ -1,8 +1,7 @@
 version: '2'
 services:
   docker-pilot:
-    #image: docker-pilot
-	build: .
+    build: .
 	dockerfile: docker-pilot
     volumes:
      - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -10,8 +9,7 @@ services:
     command: -e 'ARACHNI=dispatcher:start:sh:-x:/tmp/arachni.dispatcher.register' -e 'ARACHNI=dispatcher:stop,destroy:sh:-x:/tmp/arachni.dispatcher.register:deregister'
     
   arachni_webui:
-    #image: arachni.webui
-	build: .
+    build: .
 	dockerfile: arachni.webui
     ports:
      - "9292:9292"
@@ -19,8 +17,7 @@ services:
      - ./cache:/tmp/arachni
   
   arachni_dispatcher:
-    #image: arachni.agent
-	build: .
+    build: .
 	dockerfile: arachni.agent
     links:
      - arachni_webui
