@@ -1,31 +1,22 @@
-version: '2'
-services:
-  docker-pilot:
-    build: .
-	dockerfile: docker-pilot
-    volumes:
-     - /var/run/docker.sock:/var/run/docker.sock:ro
-     - ./arachni.dispatcher.register:/tmp/arachni.dispatcher.register
-    command: -e 'ARACHNI=dispatcher:start:sh:-x:/tmp/arachni.dispatcher.register' -e 'ARACHNI=dispatcher:stop,destroy:sh:-x:/tmp/arachni.dispatcher.register:deregister'
-    
-  arachni_webui:
-    build: .
-	dockerfile: arachni.webui
-    ports:
-     - "9292:9292"
-    volumes:
-     - ./cache:/tmp/arachni
+pilot:
+  image: docker-pilot
+  volumes:
+   - /var/run/docker.sock:/var/run/docker.sock:ro
+  command: -e 'ARACHNI=dispatcher:start:sh:-x:/tmp/arachni.dispatcher.register' -e 'ARACHNI=dispatcher:stop,destroy:sh:-x:/tmp/arachni.dispatcher.register:deregister'
   
-  arachni_dispatcher:
-    build: .
-	dockerfile: arachni.agent
-    links:
-     - arachni_webui
-    volumes:
-     - ./cache:/tmp/arachni
-    environment:
-     ARACHNI: dispatcher
-     AGENT_MODE: standalone # standalone|grid
-    depends_on:
-     - arachni_webui
-     - docker-pilot
+webui:
+  image: arachni.webui
+  ports:
+   - "9292:9292"
+  volumes:
+   - /tmp/cache:/tmp/arachni
+
+dispatcher:
+  image: arachni.agent
+  links:
+   - webui
+  volumes:
+   - /tmp/cache:/tmp/arachni
+  environment:
+   ARACHNI: dispatcher
+   AGENT_MODE: standalone # standalone|grid

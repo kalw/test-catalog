@@ -1,7 +1,0 @@
-FROM fish/docker-spotter
-
-RUN apk update
-RUN apk add docker
-
-WORKDIR    /docker-spotter
-ENTRYPOINT [ "/bin/docker-spotter" ]
