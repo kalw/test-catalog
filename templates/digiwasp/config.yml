@@ -1,7 +1,7 @@
 name: digiwasp
 description: |
   Securing Web application toolset.  Web and cli based administration. Scalable scanning and crawling featured. 
-version: v2.1.0-2.0
+version: v2.0-1.0
 category: Applications
 maintainer: Regis A. Despres <regis.despres@digitaslbi.fr>
 
