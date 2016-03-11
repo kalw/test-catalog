@@ -1,0 +1,18 @@
+FROM ahannigan/docker-arachni
+
+
+RUN echo '#!/bin/bash \n\
+set +x \n\
+agent_mode=${AGENT_MODE:-"standalone"} # grid/standalone \n\
+export HOST_IP=$(ip addr show dev eth0 | grep "inet " | awk "{print \$2}" | cut -d "/" -f 1) \n\
+if [ "$(cat /tmp/arachni/neighbor_ip)" != "" ] && [ "${agent_mode}" == "grid" ] \n\
+then \n\ 
+	export NEIGHBOR="--neighbour=$(cat /tmp/arachni/neighbor_ip):7331" \n\
+fi\n\
+echo $HOST_IP > /tmp/arachni/neighbor_ip \n\
+bin/arachni_rpcd --nickname="Dispatcher $(hostname)" --address=$HOST_IP --external-address=$HOST_IP $NEIGHBOR' > /var/agent-node.sh
+RUN chmod 755 /var/agent-node.sh
+
+
+
+CMD ["/bin/bash", "/var/agent-node.sh"]

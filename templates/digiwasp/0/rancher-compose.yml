@@ -1,0 +1,40 @@
+.catalog:
+  name: DigiWasp
+  version: 1.0-0
+  questions:
+      - variable: "AGENT_NUMBER"
+        label: "Agent number"
+        description: "How many agent we need ?"
+        type: "int"
+		default: "1"
+		required: true
+
+
+docker-pilot:
+  image: docker-pilot
+  volumes:
+   - /var/run/docker.sock:/var/run/docker.sock:ro
+   - ./arachni.dispatcher.register:/tmp/arachni.dispatcher.register
+  command: -e 'ARACHNI=dispatcher:start:sh:-x:/tmp/arachni.dispatcher.register' -e 'ARACHNI=dispatcher:stop,destroy:sh:-x:/tmp/arachni.dispatcher.register:deregister'
+  
+arachni_webui:
+  image: arachni.webui
+  ports:
+   - "9292:9292"
+  volumes:
+   - ./cache:/tmp/arachni
+
+arachni_dispatcher:
+  image: arachni.agent
+  links:
+   - arachni_webui
+  volumes:
+   - ./cache:/tmp/arachni
+  environment:
+   ARACHNI: dispatcher
+   AGENT_MODE: standalone # standalone|grid
+  depends_on:
+   - arachni_webui
+   - docker-pilot
+  scale:
+   - ${AGENT_NUMBER}
