@@ -20,14 +20,14 @@ webui:
   ports:
    - "9292:9292"
   volumes:
-   - ./cache:/tmp/arachni
+   - /tmp/cache:/tmp/arachni
 
 dispatcher:
   image: arachni.agent
   links:
    - webui
   volumes:
-   - ./cache:/tmp/arachni
+   - /tmp/cache:/tmp/arachni
   environment:
    ARACHNI: dispatcher
    AGENT_MODE: standalone # standalone|grid
