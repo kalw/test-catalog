@@ -1,20 +1,20 @@
-pilot:
+arachni_pilot:
   image: docker-pilot
   volumes:
    - /var/run/docker.sock:/var/run/docker.sock:ro
   command: -e 'ARACHNI=dispatcher:start:sh:-x:/tmp/arachni.dispatcher.register' -e 'ARACHNI=dispatcher:stop,destroy:sh:-x:/tmp/arachni.dispatcher.register:deregister'
   
-webui:
+arachni_webui:
   image: arachni.webui
   ports:
    - "9292:9292"
   volumes:
    - /tmp/cache:/tmp/arachni
 
-dispatcher:
+arachni_dispatcher:
   image: arachni.agent
   links:
-   - webui
+   - arachni_webui
   volumes:
    - /tmp/cache:/tmp/arachni
   environment:
