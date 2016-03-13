@@ -31,5 +31,4 @@ dispatcher:
   environment:
    ARACHNI: dispatcher
    AGENT_MODE: standalone # standalone|grid
-  scale:
-   - ${AGENT_NUMBER}
+  scale: ${AGENT_NUMBER}
